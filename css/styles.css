@@ -640,7 +640,9 @@ footer li a:hover { color: #fff; }
   .footer-grid { grid-template-columns: repeat(2, 1fr); }
   .blog-grid { grid-template-columns: 1fr; }
   /* About page inline grids */
-  .about-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .about-grid { grid-template-columns: 1fr !important; gap: 32px !important; align-items: start !important; }
+  /* Fix iOS Safari image stretch bug in grid */
+  .about-grid img { width: 100% !important; height: auto !important; align-self: start; }
 }
 
 @media (max-width: 768px) {
@@ -743,7 +745,8 @@ footer li a:hover { color: #fff; }
   .state-card-img { height: 160px; }
 
   /* ===== ABOUT PAGE INLINE GRIDS ===== */
-  .about-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .about-grid { grid-template-columns: 1fr !important; gap: 24px !important; align-items: start !important; }
+  .about-grid img { width: 100% !important; height: auto !important; align-self: start; max-width: 100%; }
 
   /* ===== CONTACT GRID ===== */
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
