@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free duct sizing calculator — convert round duct to rectangular and rectangular to round using the ASHRAE equivalent diameter formula. Accurate results for HVAC contractors.">
+  <meta name="ai-content-summary" content="Free online duct size calculator by Manual J USA. Converts round duct to rectangular equivalents and rectangular to round using ASHRAE equivalent diameter formula: De = 1.30 × (a×b)^0.625 / (a+b)^0.25. Shows standard sizes, aspect ratios, and flow effects.">
+  <meta property="og:title" content="Duct Size Converter | Round to Rectangle | Manual J USA">
+  <meta property="og:description" content="Convert round duct sizes to rectangular equivalents and vice versa. Free tool for HVAC contractors using ASHRAE methodology.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://manualjusa.com/duct-calculator.html">
+  <link rel="canonical" href="https://manualjusa.com/duct-calculator.html">
+  <title>Duct Size Calculator | Round to Rectangle Converter | Manual J USA</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Duct Size Calculator",
+    "description": "Accurate round to rectangle duct size conversions using the ASHRAE equivalent diameter formula. Built for contractors who need fast, reliable duct sizing answers.",
+    "applicationCategory": "UtilityApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "operatingSystem": "Web browser",
+    "url": "https://manualjusa.com/duct-calculator.html"
+  }
+  </script>
+  <style>
+    /* ===== CALCULATOR SPECIFIC STYLES ===== */
+    .calc-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .calc-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 40px;
+      gap: 0;
+    }
+    .calc-tab {
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: inherit;
+    }
+    .calc-tab:hover { color: var(--primary); }
+    .calc-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--accent);
+    }
+    .calc-panel { display: none; }
+    .calc-panel.active { display: block; }
+
+    .input-row {
+      display: flex;
+      gap: 20px;
+      align-items: flex-end;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 140px;
+    }
+    .input-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-group input, .input-group select {
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 18px;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--primary);
+      background: #fff;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .input-group .unit {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+    .calc-btn {
+      padding: 12px 32px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .calc-btn:hover { background: #a84e1a; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    /* Results table */
+    .results-section {
+      display: none;
+    }
+    .results-section.visible {
+      display: block;
+    }
+    .results-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    .results-table thead th {
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .results-table thead th:first-child { border-radius: 8px 0 0 0; }
+    .results-table thead th:last-child { border-radius: 0 8px 0 0; }
+    .results-table tbody tr:nth-child(even) { background: var(--bg-alt); }
+    .results-table tbody tr:hover { background: rgba(192,86,33,0.06); }
+    .results-table tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 500;
+    }
+    .results-table tbody td.highlight {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .match-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .exact-result {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .exact-result .result-val {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+    }
+    .exact-result .result-meta {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+    }
+    .exact-result .result-meta strong {
+      color: #fff;
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .note-box {
+      background: var(--bg-alt);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* Info cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .info-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .info-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .info-card p {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .formula-box {
+      background: var(--primary);
+      color: rgba(255,255,255,0.9);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-top: 56px;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      line-height: 2;
+    }
+    .formula-box h4 {
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+    .formula-box .formula {
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .formula-box .formula-vars {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .input-row { flex-direction: column; }
+      .calc-tab { padding: 12px 16px; font-size: 14px; }
+      .exact-result { flex-direction: column; gap: 12px; }
+      .exact-result .result-val { font-size: 40px; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZT0HF79G8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZZT0HF79G8');
+  </script>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <span>DESIGN // BOISE, ID</span>
+      <a href="tel:208-421-4493">208-421-4493</a>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="index.html">Manual J USA</a>
+        <span>Design Professionals</span>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="service-areas.html">Service Areas</a>
+        <a href="https://manualjusa.base44.app">Contractor+</a>
+        <a href="about.html">About</a>
+        <a href="media.html">Media</a>
+        <a href="duct-calculator.html" class="active">Duct Calculator</a>
+        <a href="contact.html">FAQ & Contact</a>
+        <a href="https://manualjusa.base44.app" class="btn btn-primary mobile-signin" style="margin-top:8px; display:none;">Sign In / Contractor+</a>
+      </nav>
+      <button class="nav-toggle" onclick="toggleNav()">&#9776;</button>
+      <a href="https://manualjusa.base44.app" class="btn btn-primary header-signin">Sign In</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-tag">FREE TOOL // DUCT SIZING</div>
+        <h1>Round ↔ Rectangle Duct Size Converter</h1>
+        <p>Accurate duct equivalency conversions using the ASHRAE equivalent diameter formula. Built for contractors in the field who need fast, reliable answers.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="calc-wrapper">
+
+          <!-- Tabs -->
+          <div class="calc-tabs">
+            <button class="calc-tab active" onclick="switchTab('rect')">Round → Rectangle</button>
+            <button class="calc-tab" onclick="switchTab('round')">Rectangle → Round</button>
+          </div>
+
+          <!-- Panel 1: Round to Rectangle -->
+          <div class="calc-panel active" id="panel-rect">
+            <p style="color:var(--text-light); margin-bottom:28px; font-size:15px;">Enter a round duct diameter and get all equivalent rectangular sizes, sorted by aspect ratio. Closest to 1:1 is most efficient.</p>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Round Duct Diameter</label>
+                <input type="number" id="round-input" min="4" max="60" step="0.5" placeholder="e.g. 10" oninput="calcRoundToRect()">
+                <span class="unit">inches</span>
+              </div>
+              <div class="input-group" style="max-width:180px;">
+                <label>Max Rect Side (in)</label>
+                <input type="number" id="max-side" min="6" max="72" step="2" value="36" oninput="calcRoundToRect()">
+                <span class="unit">limit results</span>
+              </div>
+            </div>
+
+            <div class="results-section" id="rect-results">
+              <div class="results-label">Equivalent Rectangular Sizes</div>
+              <div class="table-scroll">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Width × Height (in)</th>
+                    <th>Equiv. Round (in)</th>
+                    <th>Difference</th>
+                    <th>Aspect Ratio</th>
+                    <th>Area (in²)</th>
+                  </tr>
+                </thead>
+                <tbody id="rect-tbody"></tbody>
+              </table>
+              </div>
+              <div class="note-box">
+                <strong>Tip:</strong> Aspect ratios closer to 1:1 are more aerodynamically efficient and produce less noise. Avoid ratios greater than 4:1 when possible. All conversions use equivalent friction loss per unit length (ASHRAE method).
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2: Rectangle to Round -->
+          <div class="calc-panel" id="panel-round">
+            <p style="color:var(--text-light); margin-bottom:28px; font-size:15px;">Enter rectangular duct dimensions to find the equivalent round duct diameter and the nearest standard round sizes.</p>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Width</label>
+                <input type="number" id="rect-w" min="4" max="72" step="1" placeholder="e.g. 14" oninput="calcRectToRound()">
+                <span class="unit">inches</span>
+              </div>
+              <div style="display:flex; align-items:center; padding-bottom:28px; font-size:24px; color:var(--text-light); font-weight:300;">×</div>
+              <div class="input-group">
+                <label>Height</label>
+                <input type="number" id="rect-h" min="4" max="72" step="1" placeholder="e.g. 10" oninput="calcRectToRound()">
+                <span class="unit">inches</span>
+              </div>
+            </div>
+
+            <div class="results-section" id="round-results">
+              <div class="exact-result">
+                <div class="result-val" id="equiv-round">—</div>
+                <div class="result-meta">
+                  <strong>Equivalent Round Diameter</strong>
+                  Based on ASHRAE De = 1.30 × (a×b)^0.625 / (a+b)^0.25
+                </div>
+              </div>
+              <div class="results-label">Nearest Standard Round Sizes</div>
+              <div class="table-scroll">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Round Size (in)</th>
+                    <th>Difference from Exact</th>
+                    <th>Effect on Flow</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="round-tbody"></tbody>
+              </table>
+              </div>
+              <div class="note-box">
+                <strong>Round up or down?</strong> Round up to the next standard size to maintain or slightly increase airflow capacity. Round down only if you need to reduce flow in that branch. Consult your Manual D calculations before finalizing.
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Grid -->
+          <div class="info-grid">
+            <div class="info-card">
+              <h4>What is Equivalent Diameter?</h4>
+              <p>The equivalent diameter is the round duct size that produces the same friction loss per unit length as the rectangular duct — not the same cross-sectional area.</p>
+            </div>
+            <div class="info-card">
+              <h4>Why Aspect Ratio Matters</h4>
+              <p>High aspect ratios (e.g. 4:1 or greater) increase turbulence, noise, and friction. A 12×12 round is more efficient than an 18×8 even at the same equivalent diameter.</p>
+            </div>
+            <div class="info-card">
+              <h4>Need a Full Manual D?</h4>
+              <p>This tool handles quick conversions. For a complete duct design with friction rates, velocity checks, and equipment sizing, get a Manual D from us.</p>
+            </div>
+          </div>
+
+          <!-- Formula Reference -->
+          <div class="formula-box">
+            <h4>ASHRAE Equivalent Diameter Formula</h4>
+            <div class="formula">De = 1.30 × (a × b)^0.625 / (a + b)^0.25</div>
+            <div class="formula-vars">
+              De = equivalent round duct diameter (inches)<br>
+              a  = width of rectangular duct (inches)<br>
+              b  = height of rectangular duct (inches)<br>
+              Source: ASHRAE Fundamentals Handbook, Duct Design chapter
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <div class="container">
+        <h2>Need a Full Manual D Duct Design?</h2>
+        <p>Quick conversions are a start. A proper Manual D gives you friction rates, velocity checks, and a system that's balanced from the unit to every register.</p>
+        <a href="contact.html" class="btn btn-primary">Get a Quote</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>Manual J USA</h4>
+          <p>Load calculation experts serving the western United States with code-compliant Manual J, D & S reports.</p>
+          <p><strong>Boise, Idaho</strong></p>
+          <p><a href="tel:208-421-4493">208-421-4493</a></p>
+          <p><a href="mailto:tim@manualjusa.com">tim@manualjusa.com</a></p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html#manual-j">Manual J</a></li>
+            <li><a href="services.html#manual-d">Manual D</a></li>
+            <li><a href="services.html#manual-s">Manual S</a></li>
+            <li><a href="services.html#inspection-ready">Inspection-Ready Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Tools & Resources</h4>
+          <ul>
+            <li><a href="duct-calculator.html">Duct Size Calculator</a></li>
+            <li><a href="media.html">Media & Resources</a></li>
+            <li><a href="media/what-is-a-manual-j.html">What Is Manual J?</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Service Areas</h4>
+          <ul>
+            <li><a href="service-areas.html#idaho">Idaho</a></li>
+            <li><a href="service-areas.html#oregon">Oregon</a></li>
+            <li><a href="service-areas.html#washington">Washington</a></li>
+            <li><a href="service-areas.html#arizona">Arizona</a></li>
+            <li><a href="service-areas.html#new-mexico">New Mexico</a></li>
+            <li><a href="service-areas.html#utah">Utah</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Manual J USA. All rights reserved.</p>
+        <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== ASHRAE EQUIVALENT DIAMETER =====
+    // De = 1.30 * (a*b)^0.625 / (a+b)^0.25
+    function equivDiameter(a, b) {
+      return 1.30 * Math.pow(a * b, 0.625) / Math.pow(a + b, 0.25);
+    }
+
+    // Standard rectangular duct dimensions (inches)
+    const RECT_DIMS = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 40, 42, 48];
+
+    // Standard round duct sizes (inches)
+    const ROUND_SIZES = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30];
+
+    function switchTab(tab) {
+      document.querySelectorAll('.calc-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'rect' && i === 0) || (tab === 'round' && i === 1));
+      });
+      document.getElementById('panel-rect').classList.toggle('active', tab === 'rect');
+      document.getElementById('panel-round').classList.toggle('active', tab === 'round');
+    }
+
+    // ===== ROUND → RECTANGLE =====
+    function calcRoundToRect() {
+      const target = parseFloat(document.getElementById('round-input').value);
+      const maxSide = parseFloat(document.getElementById('max-side').value) || 36;
+      const resultsDiv = document.getElementById('rect-results');
+      const tbody = document.getElementById('rect-tbody');
+
+      if (!target || target < 4 || target > 80) {
+        resultsDiv.classList.remove('visible');
+        return;
+      }
+
+      const results = [];
+
+      for (let i = 0; i < RECT_DIMS.length; i++) {
+        for (let j = i; j < RECT_DIMS.length; j++) {
+          const a = RECT_DIMS[i];
+          const b = RECT_DIMS[j];
+          if (a > maxSide || b > maxSide) continue;
+          const de = equivDiameter(a, b);
+          const diff = Math.abs(de - target);
+          if (diff <= 0.75) { // within 3/4 inch
+            results.push({ a, b, de, diff });
+          }
+        }
+      }
+
+      if (results.length === 0) {
+        // Broaden search
+        for (let i = 0; i < RECT_DIMS.length; i++) {
+          for (let j = i; j < RECT_DIMS.length; j++) {
+            const a = RECT_DIMS[i];
+            const b = RECT_DIMS[j];
+            if (a > maxSide || b > maxSide) continue;
+            const de = equivDiameter(a, b);
+            const diff = Math.abs(de - target);
+            if (diff <= 1.5) {
+              results.push({ a, b, de, diff });
+            }
+          }
+        }
+      }
+
+      // Sort by aspect ratio (closest to 1:1 first), then by diff
+      results.sort((x, y) => {
+        const ratioX = x.b / x.a;
+        const ratioY = y.b / y.a;
+        return ratioX - ratioY;
+      });
+
+      tbody.innerHTML = '';
+      results.forEach((r, idx) => {
+        const aspectNum = r.b / r.a;
+        const aspectStr = aspectNum === 1 ? '1:1' : `1:${aspectNum.toFixed(1)}`;
+        const area = (r.a * r.b).toFixed(0);
+        const diffVal = (r.de - target).toFixed(2);
+        const diffStr = diffVal > 0 ? `+${diffVal}"` : `${diffVal}"`;
+        const isExact = r.diff < 0.05;
+        const isBest = idx === 0;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="highlight">${r.a}" × ${r.b}"${isBest ? '<span class="match-badge">BEST RATIO</span>' : ''}${isExact ? '<span class="match-badge" style="background:var(--primary)">EXACT</span>' : ''}</td>
+          <td>${r.de.toFixed(2)}"</td>
+          <td style="color:${Math.abs(parseFloat(diffVal)) < 0.1 ? 'var(--primary)' : 'var(--text-light)'}">${diffStr}</td>
+          <td>${aspectStr}</td>
+          <td>${area}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (results.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:24px;">No standard rectangular equivalents found within ±1.5". Try adjusting the max side or using a non-standard size.</td></tr>';
+      }
+
+      resultsDiv.classList.add('visible');
+    }
+
+    // ===== RECTANGLE → ROUND =====
+    function calcRectToRound() {
+      const a = parseFloat(document.getElementById('rect-w').value);
+      const b = parseFloat(document.getElementById('rect-h').value);
+      const resultsDiv = document.getElementById('round-results');
+      const tbody = document.getElementById('round-tbody');
+      const equivVal = document.getElementById('equiv-round');
+
+      if (!a || !b || a < 4 || b < 4) {
+        resultsDiv.classList.remove('visible');
+        return;
+      }
+
+      const de = equivDiameter(a, b);
+      equivVal.textContent = de.toFixed(2) + '"';
+
+      // Find nearest standard round sizes
+      const roundResults = ROUND_SIZES.map(r => ({
+        size: r,
+        diff: r - de,
+        absDiff: Math.abs(r - de)
+      })).filter(r => r.absDiff <= 3)
+         .sort((x, y) => x.absDiff - y.absDiff)
+         .slice(0, 5);
+
+      tbody.innerHTML = '';
+      roundResults.forEach((r, idx) => {
+        const diffStr = r.diff > 0 ? `+${r.diff.toFixed(2)}"` : `${r.diff.toFixed(2)}"`;
+        const effect = r.diff > 0.1 ? '↑ Slightly more flow' : r.diff < -0.1 ? '↓ Slightly less flow' : '≈ Same flow';
+        const effectColor = r.diff > 0.1 ? '#2f855a' : r.diff < -0.1 ? '#c05621' : 'var(--text-light)';
+        const isNearest = idx === 0;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="highlight">${r.size}"${isNearest ? '<span class="match-badge">NEAREST</span>' : ''}</td>
+          <td>${diffStr}</td>
+          <td style="color:${effectColor};font-weight:600;">${effect}</td>
+          <td style="color:var(--text-light);font-size:14px;">${r.diff >= 0 ? 'Safe to upsize' : 'Reduces capacity'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.add('visible');
+    }
+  </script>
+
+  <script>
+    function toggleNav() {
+      var nav = document.querySelector('nav');
+      nav.classList.toggle('open');
+    }
+    // Close nav when clicking a link
+    document.querySelectorAll('nav a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        document.querySelector('nav').classList.remove('open');
+      });
+    });
+    // Close nav when clicking outside
+    document.addEventListener('click', function(e) {
+      var nav = document.querySelector('nav');
+      var toggle = document.querySelector('.nav-toggle');
+      if (nav.classList.contains('open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+        nav.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>

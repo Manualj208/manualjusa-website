@@ -1,0 +1,6 @@
+# Filesystem artifacts (FUSE mounts)
+.fuse_hidden*
+
+# OS files
+.DS_Store
+Thumbs.db

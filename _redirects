@@ -1,0 +1,56 @@
+# Manual J USA - Cloudflare Pages Redirects
+# Docs: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# www to non-www: Handled by Cloudflare DNS redirect rule (not _redirects — Cloudflare Pages only supports relative source paths)
+
+# Common Squarespace URL patterns → new pages
+/about-us /about 301
+/about-us/ /about 301
+/contact-us /contact 301
+/contact-us/ /contact 301
+/contact-1 /contact 301
+/faq /contact 301
+/faq/ /contact 301
+/get-a-quote /contact 301
+/quote /contact 301
+/service-area /service-areas 301
+/service-area/ /service-areas 301
+/our-services /services 301
+/our-services/ /services 301
+/manual-j /services#manual-j 301
+/manual-d /services#manual-d 301
+/manual-s /services#manual-s 301
+/load-calculation /services 301
+/load-calculations /services 301
+/contractor-plus https://manualjusa.base44.app 301
+/contractorplus https://manualjusa.base44.app 301
+/membership https://manualjusa.base44.app 301
+/contractor-plus.html https://manualjusa.base44.app 301
+/blog /media 301
+/blog/ /media 301
+/resources /media 301
+/calculator /duct-calculator 301
+/duct-sizing /duct-calculator 301
+/tool /duct-calculator 301
+/tools /duct-calculator 301
+/pricing/ /pricing 301
+/rates /pricing 301
+
+# State-specific searches (SEO catch-all for location queries)
+/idaho /service-areas#idaho 301
+/oregon /service-areas#oregon 301
+/washington /service-areas#washington 301
+/arizona /service-areas#arizona 301
+/new-mexico /service-areas#new-mexico 301
+/utah /service-areas#utah 301
+/boise /service-areas#idaho 301
+/seattle /service-areas#washington 301
+/portland /service-areas#oregon 301
+/phoenix /service-areas#arizona 301
+/salt-lake-city /service-areas#utah 301
+/albuquerque /service-areas#new-mexico 301
+
+# Blog article variations
+/what-is-manual-j /media/what-is-a-manual-j 301
+/what-is-a-manual-j /media/what-is-a-manual-j 301
+/manual-j-guide /media/what-is-a-manual-j 301

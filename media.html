@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manual J USA blog and media resources. Articles about load calculations, design, and contractor resources.">
+  <meta property="og:title" content="Media & Resources | Manual J USA">
+  <meta property="og:description" content="Blog articles and educational resources for contractors and design professionals.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://manualjusa.com/media.html">
+  <link rel="canonical" href="https://manualjusa.com/media.html">
+  <title>Media & Resources | Duct Size Calculator | Manual J USA</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .calc-tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:36px; }
+    .calc-tab { padding:13px 28px; font-size:15px; font-weight:600; color:var(--text-light); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all 0.2s; background:none; border-top:none; border-left:none; border-right:none; font-family:inherit; }
+    .calc-tab:hover { color:var(--primary); }
+    .calc-tab.active { color:var(--primary); border-bottom-color:var(--accent); }
+    .calc-panel { display:none; }
+    .calc-panel.active { display:block; }
+    .input-row { display:flex; gap:20px; align-items:flex-end; margin-bottom:28px; flex-wrap:wrap; }
+    .input-group { display:flex; flex-direction:column; gap:8px; flex:1; min-width:130px; }
+    .input-group label { font-size:12px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; }
+    .input-group input { padding:11px 14px; border:2px solid var(--border); border-radius:8px; font-size:18px; font-family:inherit; font-weight:700; color:var(--primary); background:#fff; transition:border-color 0.2s; width:100%; }
+    .input-group input:focus { outline:none; border-color:var(--accent); }
+    .input-group .unit { font-size:12px; color:var(--text-light); margin-top:2px; }
+    .results-section { display:none; margin-top:4px; }
+    .results-section.visible { display:block; }
+    .results-label { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+    .results-table { width:100%; border-collapse:collapse; font-size:14px; }
+    .results-table thead th { background:var(--primary); color:#fff; padding:11px 14px; text-align:left; font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:600; }
+    .results-table thead th:first-child { border-radius:8px 0 0 0; }
+    .results-table thead th:last-child { border-radius:0 8px 0 0; }
+    .results-table tbody tr:nth-child(even) { background:var(--bg-alt); }
+    .results-table tbody tr:hover { background:rgba(192,86,33,0.05); }
+    .results-table tbody td { padding:11px 14px; border-bottom:1px solid var(--border); color:var(--text); font-weight:500; }
+    .results-table tbody td.hl { color:var(--primary); font-weight:700; font-size:15px; }
+    .match-badge { display:inline-block; background:var(--accent); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:100px; letter-spacing:0.5px; margin-left:6px; vertical-align:middle; }
+    .exact-result { background:var(--primary); color:#fff; border-radius:12px; padding:24px 28px; margin-bottom:20px; display:flex; align-items:center; gap:20px; }
+    .exact-result .rval { font-size:48px; font-weight:800; line-height:1; color:#fff; }
+    .exact-result .rmeta { font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6; }
+    .exact-result .rmeta strong { color:#fff; display:block; font-size:15px; margin-bottom:3px; }
+    .calc-note { background:var(--bg-alt); border-left:3px solid var(--accent); padding:14px 18px; border-radius:0 8px 8px 0; margin-top:20px; font-size:13px; color:var(--text-light); line-height:1.6; }
+    .formula-row { background:var(--primary); color:rgba(255,255,255,0.85); border-radius:var(--radius); padding:24px 28px; margin-top:32px; font-family:'Courier New',monospace; font-size:13px; line-height:1.8; }
+    .formula-row .f-title { color:rgba(255,255,255,0.5); font-size:11px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+    .formula-row .f-eq { font-size:17px; color:#fff; font-weight:600; }
+    @media(max-width:768px){ .input-row{flex-direction:column;} .exact-result{flex-direction:column;gap:10px;} .exact-result .rval{font-size:38px;} }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZT0HF79G8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZZT0HF79G8');
+  </script>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <span>DESIGN // BOISE, ID</span>
+      <a href="tel:208-421-4493">208-421-4493</a>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="index.html">Manual J USA</a>
+        <span>Design Professionals</span>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="service-areas.html">Service Areas</a>
+        <a href="https://manualjusa.base44.app">Contractor+</a>
+        <a href="about.html">About</a>
+        <a href="media.html" class="active">Media</a>
+        <a href="duct-calculator.html">Duct Calculator</a>
+        <a href="contact.html">FAQ & Contact</a>
+        <a href="https://manualjusa.base44.app" class="btn btn-primary mobile-signin" style="margin-top:8px; display:none;">Sign In / Contractor+</a>
+      </nav>
+      <button class="nav-toggle" onclick="toggleNav()">&#9776;</button>
+      <a href="https://manualjusa.base44.app" class="btn btn-primary header-signin">Sign In</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Media & Resources</h1>
+        <p>Educational articles and industry insights to help contractors and design professionals succeed.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-tag">BLOG</div>
+        <h2 class="section-title">Latest Articles</h2>
+
+        <div class="blog-grid">
+          <a href="media/what-is-a-manual-j.html" style="text-decoration: none; color: inherit;">
+            <article class="blog-card">
+              <div class="blog-card-body">
+                <div class="date">April 11, 2026</div>
+                <h3>What Is a Manual J Calculation?</h3>
+                <p>A Simple Guide for Homeowners and Contractors. Learn what a Manual J is, why it matters, and how it impacts your next project.</p>
+              </div>
+            </article>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DUCT SIZE CALCULATOR ===== -->
+    <section class="alt" id="duct-calculator">
+      <div class="container">
+        <div class="section-tag">FREE TOOL</div>
+        <h2 class="section-title">Round ↔ Rectangle Duct Size Calculator</h2>
+        <p class="section-subtitle">Accurate conversions using the ASHRAE equivalent diameter formula — the same methodology used in Manual D software.</p>
+
+        <div style="max-width:820px; margin:0 auto;">
+
+          <div class="calc-tabs">
+            <button class="calc-tab active" onclick="switchTab('rect')">Round → Rectangle</button>
+            <button class="calc-tab" onclick="switchTab('round')">Rectangle → Round</button>
+          </div>
+
+          <!-- Panel: Round to Rectangle -->
+          <div class="calc-panel active" id="panel-rect">
+            <p style="color:var(--text-light);margin-bottom:24px;font-size:15px;">Enter a round duct diameter — get every standard rectangular equivalent, sorted best ratio first.</p>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Round Diameter</label>
+                <input type="number" id="round-input" min="4" max="60" step="0.5" placeholder="e.g. 10" oninput="calcRoundToRect()">
+                <span class="unit">inches</span>
+              </div>
+              <div class="input-group" style="max-width:160px;">
+                <label>Max Side Limit</label>
+                <input type="number" id="max-side" min="6" max="72" step="2" value="36" oninput="calcRoundToRect()">
+                <span class="unit">inches (filter)</span>
+              </div>
+            </div>
+            <div class="results-section" id="rect-results">
+              <div class="results-label">Equivalent Rectangular Sizes</div>
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Width × Height</th>
+                    <th>Equiv. Round</th>
+                    <th>Difference</th>
+                    <th>Aspect Ratio</th>
+                    <th>Area (in²)</th>
+                  </tr>
+                </thead>
+                <tbody id="rect-tbody"></tbody>
+              </table>
+              <div class="calc-note"><strong>Tip:</strong> Aspect ratios closest to 1:1 are most efficient. Avoid ratios beyond 4:1 — they increase noise and friction loss.</div>
+            </div>
+          </div>
+
+          <!-- Panel: Rectangle to Round -->
+          <div class="calc-panel" id="panel-round">
+            <p style="color:var(--text-light);margin-bottom:24px;font-size:15px;">Enter rectangular duct dimensions to find the exact equivalent round diameter and nearest standard sizes.</p>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Width</label>
+                <input type="number" id="rect-w" min="4" max="72" step="1" placeholder="e.g. 14" oninput="calcRectToRound()">
+                <span class="unit">inches</span>
+              </div>
+              <div style="display:flex;align-items:center;padding-bottom:26px;font-size:22px;color:var(--text-light);">×</div>
+              <div class="input-group">
+                <label>Height</label>
+                <input type="number" id="rect-h" min="4" max="72" step="1" placeholder="e.g. 10" oninput="calcRectToRound()">
+                <span class="unit">inches</span>
+              </div>
+            </div>
+            <div class="results-section" id="round-results">
+              <div class="exact-result">
+                <div class="rval" id="equiv-round">—</div>
+                <div class="rmeta">
+                  <strong>Equivalent Round Diameter</strong>
+                  De = 1.30 × (a×b)^0.625 / (a+b)^0.25
+                </div>
+              </div>
+              <div class="results-label">Nearest Standard Round Sizes</div>
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Round Size</th>
+                    <th>Difference</th>
+                    <th>Effect on Flow</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="round-tbody"></tbody>
+              </table>
+              <div class="calc-note"><strong>Round up or down?</strong> Size up to maintain or increase airflow. Size down only to intentionally reduce a branch. Always verify against your Manual D friction rate.</div>
+            </div>
+          </div>
+
+          <div class="formula-row">
+            <div class="f-title">ASHRAE Equivalent Diameter Formula</div>
+            <div class="f-eq">De = 1.30 × (a × b)^0.625 / (a + b)^0.25</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:12px;">De = equivalent round diameter (in) &nbsp;|&nbsp; a = width (in) &nbsp;|&nbsp; b = height (in) &nbsp;|&nbsp; Source: ASHRAE Fundamentals Handbook</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>Get a competitive quote on your next project in minutes.</p>
+        <a href="contact.html" class="btn btn-primary">Get a Quote</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>Manual J USA</h4>
+          <p>Load calculation experts serving the western United States with code-compliant Manual J, D & S reports.</p>
+          <p><strong>Boise, Idaho</strong></p>
+          <p><a href="tel:208-421-4493">208-421-4493</a></p>
+          <p><a href="mailto:tim@manualjusa.com">tim@manualjusa.com</a></p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html#manual-j">Manual J</a></li>
+            <li><a href="services.html#manual-d">Manual D</a></li>
+            <li><a href="services.html#manual-s">Manual S</a></li>
+            <li><a href="services.html#inspection-ready">Inspection-Ready Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="https://manualjusa.base44.app">Contractor+</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Service Areas</h4>
+          <ul>
+            <li><a href="service-areas.html#idaho">Idaho</a></li>
+            <li><a href="service-areas.html#oregon">Oregon</a></li>
+            <li><a href="service-areas.html#washington">Washington</a></li>
+            <li><a href="service-areas.html#arizona">Arizona</a></li>
+            <li><a href="service-areas.html#new-mexico">New Mexico</a></li>
+            <li><a href="service-areas.html#utah">Utah</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Manual J USA. All rights reserved.</p>
+        <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+  <script>
+    // ASHRAE equivalent diameter: De = 1.30 * (a*b)^0.625 / (a+b)^0.25
+    function de(a,b){ return 1.30*Math.pow(a*b,0.625)/Math.pow(a+b,0.25); }
+    const RDIMS=[4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,36,40,42,48];
+    const RSIZES=[4,5,6,7,8,9,10,11,12,13,14,15,16,18,20,22,24,26,28,30];
+
+    function switchTab(tab){
+      document.querySelectorAll('.calc-tab').forEach((t,i)=>t.classList.toggle('active',(tab==='rect'&&i===0)||(tab==='round'&&i===1)));
+      document.getElementById('panel-rect').classList.toggle('active',tab==='rect');
+      document.getElementById('panel-round').classList.toggle('active',tab==='round');
+    }
+
+    function calcRoundToRect(){
+      const target=parseFloat(document.getElementById('round-input').value);
+      const maxS=parseFloat(document.getElementById('max-side').value)||36;
+      const div=document.getElementById('rect-results');
+      const tbody=document.getElementById('rect-tbody');
+      if(!target||target<4){div.classList.remove('visible');return;}
+      let res=[];
+      let tolerance=0.75;
+      for(let pass=0;pass<3;pass++){
+        for(let i=0;i<RDIMS.length;i++){
+          for(let j=i;j<RDIMS.length;j++){
+            const a=RDIMS[i],b=RDIMS[j];
+            if(a>maxS||b>maxS) continue;
+            const d=de(a,b),diff=Math.abs(d-target);
+            if(diff<=tolerance) res.push({a,b,d,diff});
+          }
+        }
+        if(res.length>0) break;
+        tolerance+=0.75;
+      }
+      res.sort((x,y)=>(x.b/x.a)-(y.b/y.a));
+      tbody.innerHTML='';
+      res.forEach((r,idx)=>{
+        const ar=r.b/r.a,arStr=ar===1?'1:1':`1:${ar.toFixed(1)}`;
+        const rawDiff=r.d-target,dStr=(rawDiff>=0?'+':'')+rawDiff.toFixed(2)+'"';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td class="hl">${r.a}" × ${r.b}"${idx===0?'<span class="match-badge">BEST</span>':''}${r.diff<0.05?'<span class="match-badge" style="background:var(--primary)">EXACT</span>':''}</td><td>${r.d.toFixed(2)}"</td><td style="color:${Math.abs(rawDiff)<0.1?'var(--primary)':'var(--text-light)'}">${dStr}</td><td>${arStr}</td><td>${(r.a*r.b).toFixed(0)}</td>`;
+        tbody.appendChild(tr);
+      });
+      if(!res.length) tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:20px;">No standard equivalents found — try a custom size.</td></tr>';
+      div.classList.add('visible');
+    }
+
+    function calcRectToRound(){
+      const a=parseFloat(document.getElementById('rect-w').value);
+      const b=parseFloat(document.getElementById('rect-h').value);
+      const div=document.getElementById('round-results');
+      const tbody=document.getElementById('round-tbody');
+      const equivEl=document.getElementById('equiv-round');
+      if(!a||!b||a<4||b<4){div.classList.remove('visible');return;}
+      const d=de(a,b);
+      equivEl.textContent=d.toFixed(2)+'"';
+      const res=RSIZES.map(r=>({size:r,diff:r-d,abs:Math.abs(r-d)})).filter(r=>r.abs<=3).sort((x,y)=>x.abs-y.abs).slice(0,5);
+      tbody.innerHTML='';
+      res.forEach((r,idx)=>{
+        const dStr=(r.diff>=0?'+':'')+r.diff.toFixed(2)+'"';
+        const effect=r.diff>0.1?'↑ Slightly more flow':r.diff<-0.1?'↓ Slightly less flow':'≈ Same flow';
+        const ec=r.diff>0.1?'#2f855a':r.diff<-0.1?'#c05621':'var(--text-light)';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td class="hl">${r.size}"${idx===0?'<span class="match-badge">NEAREST</span>':''}</td><td>${dStr}</td><td style="color:${ec};font-weight:600;">${effect}</td><td style="color:var(--text-light);font-size:13px;">${r.diff>=0?'Safe to upsize':'Reduces capacity'}</td>`;
+        tbody.appendChild(tr);
+      });
+      div.classList.add('visible');
+    }
+  </script>
+
+  <script>
+    function toggleNav() {
+      var nav = document.querySelector('nav');
+      nav.classList.toggle('open');
+    }
+    // Close nav when clicking a link
+    document.querySelectorAll('nav a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        document.querySelector('nav').classList.remove('open');
+      });
+    });
+    // Close nav when clicking outside
+    document.addEventListener('click', function(e) {
+      var nav = document.querySelector('nav');
+      var toggle = document.querySelector('.nav-toggle');
+      if (nav.classList.contains('open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+        nav.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
