@@ -542,6 +542,21 @@ section.alt { background: var(--bg-alt); }
   margin-top: 12px;
 }
 
+/* ===== ABOUT PAGE PHOTO CONTAINERS ===== */
+.about-photo-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.about-photo-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
 /* ===== CONTACT FORM ===== */
 .contact-grid {
   display: grid;
@@ -641,16 +656,6 @@ footer li a:hover { color: #fff; }
   .blog-grid { grid-template-columns: 1fr; }
   /* About page inline grids */
   .about-grid { grid-template-columns: 1fr !important; gap: 32px !important; align-items: start !important; }
-  .about-grid > div { width: 100%; }
-  .about-photo {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: cover !important;
-    object-position: center top !important;
-    border-radius: 8px;
-    display: block !important;
-  }
 }
 
 @media (max-width: 768px) {
@@ -754,15 +759,22 @@ footer li a:hover { color: #fff; }
 
   /* ===== ABOUT PAGE INLINE GRIDS ===== */
   .about-grid { grid-template-columns: 1fr !important; gap: 24px !important; align-items: start !important; }
-  .about-grid > div { width: 100%; }
-  .about-photo {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: cover !important;
-    object-position: center top !important;
+  .about-photo-wrap {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    overflow: hidden;
     border-radius: 8px;
-    display: block !important;
+  }
+  .about-photo-wrap img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
   }
 
   /* ===== CONTACT GRID ===== */
