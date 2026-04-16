@@ -641,9 +641,16 @@ footer li a:hover { color: #fff; }
   .blog-grid { grid-template-columns: 1fr; }
   /* About page inline grids */
   .about-grid { grid-template-columns: 1fr !important; gap: 32px !important; align-items: start !important; }
-  /* Fix iOS Safari image stretch bug in grid */
   .about-grid > div { width: 100%; }
-  .about-grid img { width: 100% !important; height: auto !important; object-fit: contain !important; align-self: start; }
+  .about-photo {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    object-position: center top !important;
+    border-radius: 8px;
+    display: block !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -748,7 +755,15 @@ footer li a:hover { color: #fff; }
   /* ===== ABOUT PAGE INLINE GRIDS ===== */
   .about-grid { grid-template-columns: 1fr !important; gap: 24px !important; align-items: start !important; }
   .about-grid > div { width: 100%; }
-  .about-photo { width: 100% !important; height: 280px !important; object-fit: cover !important; border-radius: 8px; }
+  .about-photo {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    object-position: center top !important;
+    border-radius: 8px;
+    display: block !important;
+  }
 
   /* ===== CONTACT GRID ===== */
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
