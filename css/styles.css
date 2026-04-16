@@ -748,7 +748,7 @@ footer li a:hover { color: #fff; }
   /* ===== ABOUT PAGE INLINE GRIDS ===== */
   .about-grid { grid-template-columns: 1fr !important; gap: 24px !important; align-items: start !important; }
   .about-grid > div { width: 100%; }
-  .about-grid img { width: 100% !important; height: auto !important; object-fit: contain !important; align-self: start; max-width: 100%; }
+  .about-photo { width: 100% !important; height: 280px !important; object-fit: cover !important; border-radius: 8px; }
 
   /* ===== CONTACT GRID ===== */
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
