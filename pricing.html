@@ -81,6 +81,102 @@
       </div>
     </section>
 
+    <!-- ============================================================
+         INSTANT ESTIMATE TOOL
+         Posts the form (JSON as text/plain, mode:'no-cors') to a single
+         Google Apps Script web app, which validates input, computes the
+         quote server-side, emails the customer from sales@, sends a [Lead]
+         alert to sales@, and appends the lead to the Google Sheet — all in
+         one place. No Cloudflare Function, no Resend, no API keys.
+         Backend:  docs/setup/apps_script_leads.gs
+         Spec:     docs/superpowers/specs/2026-06-14-pricing-quote-tool-design.md
+         ============================================================ -->
+    <section style="background: var(--bg-alt);">
+      <div class="container">
+        <div class="section-tag">INSTANT ESTIMATE</div>
+        <h2 class="section-title">Get a Price in Under a Minute</h2>
+        <p class="section-subtitle">Tell us a few quick details and we'll email your bundled Manual J, D &amp; S estimate — standard 5-day and 48-hour rush options included.</p>
+
+        <div id="estimate-card" style="max-width: 640px; margin: 40px auto 0; background: white; padding: 40px; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+
+          <form id="estimate-form" onsubmit="handleEstimateSubmit(event)">
+            <div class="form-group">
+              <label for="est-name">Name</label>
+              <input type="text" id="est-name" name="name" required placeholder="Your name">
+            </div>
+
+            <div class="form-group">
+              <label for="est-company">Company / Business <span style="font-weight: 400; color: var(--text-muted);">(optional)</span></label>
+              <input type="text" id="est-company" name="company" placeholder="Company name">
+            </div>
+
+            <div class="form-group">
+              <label for="est-email">Email Address</label>
+              <input type="email" id="est-email" name="email" required placeholder="you@company.com">
+            </div>
+
+            <div class="form-group">
+              <label for="est-phone">Phone</label>
+              <input type="tel" id="est-phone" name="phone" required placeholder="(208) 555-0123">
+            </div>
+
+            <div class="form-group">
+              <label for="est-zip">Project ZIP Code</label>
+              <input type="text" id="est-zip" name="zip" required inputmode="numeric" maxlength="10" placeholder="83702">
+            </div>
+
+            <div class="form-group">
+              <label>Project Type</label>
+              <div style="display: flex; gap: 20px; margin-top: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; margin: 0;">
+                  <input type="radio" name="project-type" value="residential" required checked style="width: auto; margin: 0;">
+                  Residential
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; margin: 0;">
+                  <input type="radio" name="project-type" value="commercial" style="width: auto; margin: 0;">
+                  Commercial
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" id="sqft-group">
+              <label for="est-sqft">Conditioned Square Footage</label>
+              <input type="number" id="est-sqft" name="sqft" min="100" max="50000" required placeholder="e.g., 2400">
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Total heated/cooled area only — don't include garages or unconditioned space.</p>
+            </div>
+
+            <!-- Honeypot: hidden from people; bots fill it and get silently dropped. Do NOT make this required. -->
+            <div aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+              <label for="est-website">Leave this field empty</label>
+              <input type="text" id="est-website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <button type="submit" id="est-submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Get My Estimate</button>
+
+            <p id="estimate-error" style="display: none; font-size: 14px; color: #b00020; margin-top: 16px; text-align: center;">
+              Couldn't submit &mdash; please try again, or email <a href="mailto:tim@manualjusa.com">tim@manualjusa.com</a>.
+            </p>
+
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px; text-align: center;">
+              We'll email your estimate right away. Tim may follow up to help with your project &mdash; never any spam.
+            </p>
+          </form>
+
+          <div id="estimate-success" style="display: none; text-align: center; padding: 20px 0;">
+            <div style="font-size: 48px; color: var(--success); line-height: 1; margin-bottom: 16px;">&#10004;</div>
+            <h3 id="est-success-headline" style="font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 12px;">Got it &mdash; check your email!</h3>
+            <p id="est-success-body" style="font-size: 16px; color: var(--text); line-height: 1.7;">
+              We just sent your estimate to <strong id="est-success-email">you</strong>. It should arrive in a minute or two.
+            </p>
+            <p style="font-size: 14px; color: var(--text-light); margin-top: 12px;">
+              If you don't see it, check your spam folder.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <section>
       <div class="container">
         <div class="section-tag">PRICING TIERS</div>
@@ -275,3 +371,84 @@
         nav.classList.remove('open');
       }
     });
+
+    // ===== Estimate form =====
+    // Apps Script web-app endpoint (a public webhook — NOT a secret).
+    // PASTE the /exec URL here after deploying docs/setup/apps_script_leads.gs.
+    var EXEC_URL = 'https://script.google.com/macros/s/AKfycbwzw2LccXq-vax1FfDGSzjb-8cuorIcCxvDFFn13IaQu8iBXttYfEQSMcBsWYqTmyf1PA/exec';
+
+    // Toggle button label + show/hide the sqft field when project type changes
+    document.querySelectorAll('input[name="project-type"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var commercial = document.querySelector('input[name="project-type"]:checked').value === 'commercial';
+        document.getElementById('est-submit').textContent = commercial ? 'Request Estimate' : 'Get My Estimate';
+        var sqftGroup = document.getElementById('sqft-group');
+        var sqftInput = document.getElementById('est-sqft');
+        sqftGroup.style.display = commercial ? 'none' : '';
+        if (commercial) { sqftInput.removeAttribute('required'); }
+        else { sqftInput.setAttribute('required', ''); }
+      });
+    });
+
+    // Submit handler — POSTs the lead to the Apps Script web app
+    function handleEstimateSubmit(e) {
+      e.preventDefault();
+      var submitBtn = document.getElementById('est-submit');
+      var errEl = document.getElementById('estimate-error');
+      var type = document.querySelector('input[name="project-type"]:checked').value;
+
+      var payload = {
+        name: document.getElementById('est-name').value,
+        company: document.getElementById('est-company').value,
+        email: document.getElementById('est-email').value,
+        phone: document.getElementById('est-phone').value,
+        zip: document.getElementById('est-zip').value,
+        project_type: type,
+        hp: document.getElementById('est-website').value
+      };
+      if (type === 'residential') {
+        payload.sqft = Number(document.getElementById('est-sqft').value);
+      }
+
+      errEl.style.display = 'none';
+      var originalLabel = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      // no-cors + text/plain = a CORS "simple request" that reaches the Apps
+      // Script web app reliably (no preflight it can't answer). The response is
+      // opaque, so we can't read it — show success optimistically; the [Lead]
+      // alert + sheet row are the capture backstop. A true network failure
+      // (offline / bad EXEC_URL) still rejects and reveals the inline error.
+      fetch(EXEC_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).then(function() {
+        showEstimateSuccess(type, payload.email);
+      }).catch(function() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        errEl.style.display = 'block';
+      });
+    }
+
+    function showEstimateSuccess(type, email) {
+      var headline = document.getElementById('est-success-headline');
+      var body = document.getElementById('est-success-body');
+      if (type === 'commercial') {
+        headline.textContent = 'Got it — we’ll be in touch!';
+        body.innerHTML = 'We just emailed <strong>' + email + '</strong>. Reply with your plans attached and Tim will follow up with any questions and an estimate.';
+      } else {
+        headline.textContent = 'Got it — check your email!';
+        body.innerHTML = 'We just sent your estimate to <strong>' + email + '</strong>. It should arrive in a minute or two.';
+      }
+      document.getElementById('estimate-form').style.display = 'none';
+      var successEl = document.getElementById('estimate-success');
+      successEl.style.display = 'block';
+      successEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  </script>
+</body>
+</html>
