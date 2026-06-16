@@ -468,43 +468,6 @@ section.alt { background: var(--bg-alt); }
 }
 .cta-banner .btn { margin: 0 8px; }
 
-/* ===== TESTIMONIALS ===== */
-.testimonial-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-.testimonial-card {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 32px;
-  position: relative;
-}
-.testimonial-stars {
-  color: #f6ad55;
-  font-size: 18px;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
-}
-.testimonial-text {
-  font-size: 15px;
-  color: var(--text-light);
-  line-height: 1.7;
-  margin-bottom: 20px;
-  font-style: italic;
-}
-.testimonial-author strong {
-  display: block;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--primary);
-}
-.testimonial-author span {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
 /* ===== STATE PILLS ===== */
 .states-inline {
   display: flex;
@@ -721,7 +684,6 @@ footer li a:hover { color: #fff; }
   .contact-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: repeat(2, 1fr); }
   .blog-grid { grid-template-columns: 1fr; }
-  .testimonial-grid { grid-template-columns: 1fr; }
   /* About page inline grids */
   .about-grid { grid-template-columns: 1fr !important; gap: 32px !important; align-items: start !important; }
 }
