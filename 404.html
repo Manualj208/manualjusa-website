@@ -14,6 +14,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Smart redirect for known old URLs (QR codes pointing to old Squarespace paths) -->
+  <script>
+    (function() {
+      var path = window.location.pathname.replace(/\/$/, '');
+      var known = { '/home': '/' };
+      if (known[path]) { window.location.replace(known[path]); }
+    })();
+  </script>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZT0HF79G8"></script>
   <script>
@@ -46,7 +54,7 @@
         <a href="about.html">About</a>
         <a href="media.html">Media</a>
         <a href="duct-calculator.html">Duct Calculator</a>
-        <a href="contact.html">FAQ & Contact</a>
+        <a href="contact.html">FAQ &amp; Contact</a>
       </nav>
       <button class="nav-toggle" onclick="toggleNav()">&#9776;</button>
     </div>
@@ -86,10 +94,10 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <h4>Manual J USA</h4>
-          <p>Load calculation experts serving the western United States with code-compliant Manual J, D & S reports.</p>
+          <p>Load calculation experts serving the western United States with code-compliant Manual J, D &amp; S reports.</p>
           <p><strong>Boise, Idaho</strong></p>
           <p><a href="tel:208-421-4493">208-421-4493</a></p>
-          <p><a href="mailto:tim@manualjusa.com">tim@manualjusa.com</a></p>
+          <p><a href="mailto:info@manualjusa.com">info@manualjusa.com</a></p>
         </div>
         <div>
           <h4>Services</h4>
@@ -133,13 +141,11 @@
       var nav = document.querySelector('nav');
       nav.classList.toggle('open');
     }
-    // Close nav when clicking a link
     document.querySelectorAll('nav a').forEach(function(link) {
       link.addEventListener('click', function() {
         document.querySelector('nav').classList.remove('open');
       });
     });
-    // Close nav when clicking outside
     document.addEventListener('click', function(e) {
       var nav = document.querySelector('nav');
       var toggle = document.querySelector('.nav-toggle');
