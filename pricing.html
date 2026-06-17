@@ -91,7 +91,7 @@
          Backend:  docs/setup/apps_script_leads.gs
          Spec:     docs/superpowers/specs/2026-06-14-pricing-quote-tool-design.md
          ============================================================ -->
-    <section style="background: var(--bg-alt);">
+    <section id="estimate" style="background: var(--bg-alt);">
       <div class="container">
         <div class="section-tag">INSTANT ESTIMATE</div>
         <h2 class="section-title">Get a Price in Under a Minute</h2>
@@ -158,7 +158,7 @@
             </p>
 
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px; text-align: center;">
-              We'll email your estimate right away. Tim may follow up to help with your project &mdash; never any spam.
+              We'll email your estimate right away. We may follow up to help with your project &mdash; never any spam.
             </p>
           </form>
 
@@ -188,20 +188,20 @@
             <div class="tier-name">Under 2,000 sq ft</div>
             <div class="price">$250<span class="price-unit">flat rate</span></div>
             <div class="includes">Perfect for smaller homes and additions</div>
-            <a href="contact.html" class="btn btn-primary" style="width: 100%;">Get Quote</a>
+            <a href="#estimate" class="btn btn-primary" style="width: 100%;">Get Quote</a>
           </div>
           <div class="pricing-card featured">
             <div class="badge">POPULAR</div>
             <div class="tier-name">2,000–4,000 sq ft</div>
             <div class="price">$0.15<span class="price-unit">per sq ft</span></div>
             <div class="includes">Most common project size</div>
-            <a href="contact.html" class="btn btn-primary" style="width: 100%;">Get Quote</a>
+            <a href="#estimate" class="btn btn-primary" style="width: 100%;">Get Quote</a>
           </div>
           <div class="pricing-card">
             <div class="tier-name">Over 4,000 sq ft</div>
             <div class="price">$0.17<span class="price-unit">per sq ft</span></div>
             <div class="includes">Complex multi-zone projects</div>
-            <a href="contact.html" class="btn btn-primary" style="width: 100%;">Get Quote</a>
+            <a href="#estimate" class="btn btn-primary" style="width: 100%;">Get Quote</a>
           </div>
         </div>
 
@@ -298,7 +298,7 @@
         <h2>Ready to Order Your Manual J Report?</h2>
         <p>Get a competitive quote on your next project. Bundled Manual J, D &amp; S starting at $250.</p>
         <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-          <a href="contact.html" class="btn btn-primary">Get a Quote</a>
+          <a href="#estimate" class="btn btn-primary">Get a Quote</a>
           <a href="contractor-plus.html" class="btn btn-white">Learn About Contractor+</a>
         </div>
       </div>
@@ -439,7 +439,7 @@
       var body = document.getElementById('est-success-body');
       if (type === 'commercial') {
         headline.textContent = 'Got it — we’ll be in touch!';
-        body.innerHTML = 'We just emailed <strong>' + email + '</strong>. Reply with your plans attached and Tim will follow up with any questions and an estimate.';
+        body.innerHTML = 'We just emailed <strong>' + email + '</strong>. Reply with your plans attached and we will follow up with any questions and an estimate.';
       } else {
         headline.textContent = 'Got it — check your email!';
         body.innerHTML = 'We just sent your estimate to <strong>' + email + '</strong>. It should arrive in a minute or two.';
