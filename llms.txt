@@ -59,6 +59,17 @@ Free membership program for contractors. Benefits: 5% discount on all orders, ex
 - Blog: https://manualjusa.com/media.html
 - Duct Calculator: https://manualjusa.com/duct-calculator.html
 
+## State Manual J Pages
+
+Dedicated Manual J, D & S load calculation pages for each state we serve:
+
+- Idaho: https://manualjusa.com/manual-j-idaho.html
+- Oregon: https://manualjusa.com/manual-j-oregon.html
+- Washington: https://manualjusa.com/manual-j-washington.html
+- Arizona: https://manualjusa.com/manual-j-arizona.html
+- New Mexico: https://manualjusa.com/manual-j-new-mexico.html
+- Utah: https://manualjusa.com/manual-j-utah.html
+
 ## Frequently Asked Questions
 
 Q: What is a Manual J calculation?
